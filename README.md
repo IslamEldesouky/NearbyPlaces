@@ -1,16 +1,21 @@
-# untitled1
 
-A new Flutter project.
 
-## Getting Started
+## Description
 
-This project is a starting point for a Flutter application.
+An app to show the nearby places of categories like Restaurants, Pharmacies,, etc .
 
-A few resources to get you started if this is your first Flutter project:
+### Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- User can see his own location in the red marker
+- Searching for nearby places and they will appear in blue markers
+- User can see more details about the place and it's images 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Built with
+
+- Flutter
+- Dart
+
+![image](https://user-images.githubusercontent.com/17251705/215225414-6daf16f8-dd99-4411-a1d1-8dc18c17798b.png)
+
+![image](https://user-images.githubusercontent.com/17251705/215225739-6154027d-eb7d-4860-9609-403c2d91e15c.png)
+
