@@ -26,14 +26,6 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
         title: Text(result.name),
         centerTitle: true,
         actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ))
         ],
       ),
       body: Container(
@@ -58,7 +50,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
                   ),
                   Spacer(),
                   Text(
-                    result.rating.toString() == null
+                    result.rating == null
                         ? "Not available"
                         : result.rating.toString(),
                     style: TextStyle(color: Colors.black, fontSize: 12),
@@ -67,13 +59,13 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
               ),
               Padding(padding: EdgeInsets.only(top: 10)),
               Container(
-                height: 250,
+                height: MediaQuery.of(context).size.height*0.7,
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: result.photos.length,
                   itemBuilder: (BuildContext ctx, int index) {
-                    return Padding(
-                      padding: EdgeInsets.all(20),
+                    return result.photos.length>0? Padding(
+                      padding: const EdgeInsets.all(20),
                       child: Card(
                         shape: Border.all(
                           width: 5,
@@ -84,7 +76,7 @@ class _PlaceDetailsScreenState extends State<PlaceDetailsScreen> {
                                 result.photos[index].photoReference +
                                 "&key="+dotenv.env['API_KEY']!),
                       ),
-                    );
+                    ): Center(child: Text("No Images available"),);
                   },
                 ),
               )
