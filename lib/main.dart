@@ -1,16 +1,21 @@
 import 'package:clippy_flutter/triangle.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:untitled1/place_details_screen.dart';
 
-void main() => runApp(MyApp());
+void main() async{
+  await dotenv.load();
+  runApp(MyApp());
+}
 
 final places =
-    GoogleMapsPlaces(apiKey: "AIzaSyCM6SRj9Ku22_2nZ6JAY7OW_Q8zKRCm270");
+    GoogleMapsPlaces(apiKey: dotenv.env['API_KEY']);
 Icon customIcon = const Icon(Icons.search);
 Widget customSearchBar = const Text('My Personal Journal');
 TextEditingController nearByCategory = new TextEditingController();
@@ -19,26 +24,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Foodie Map",
+      title: "NearBy Map",
       home: Scaffold(
-          // We'll change the AppBar title later
           appBar: AppBar(title: const Text("Search nearby categories")),
-          body: FoodieMap()),
+          body: NearByMap()),
     );
   }
 }
 
-class FoodieMap extends StatefulWidget {
+class NearByMap extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _FoodieMapState();
+    return _NearByMapState();
   }
 }
 
-class _FoodieMapState extends State<FoodieMap> {
+class _NearByMapState extends State<NearByMap> {
   Future<Position>? _currentLocation;
   Set<Marker> _markers = {};
-  String googleApikey = "AIzaSyCM6SRj9Ku22_2nZ6JAY7OW_Q8zKRCm270";
+  String googleApikey = dotenv.env['API_KEY']!;
   GoogleMapController? mapController; //contrller for Google map
   CameraPosition? cameraPosition;
   LatLng startLocation = LatLng(27.6602292, 85.308027);
@@ -59,15 +63,9 @@ class _FoodieMapState extends State<FoodieMap> {
         Location(lat: _userLocation.latitude, lng: _userLocation.longitude),
         10000,
         type: placeController.text);
-
-    print("LOG" + _response.status);
-    print("LOG" + _response.toString());
-    print("LOG" + placeController.text);
     Set<Marker> _restaurantMarkers = _response.results
         .map((result) => Marker(
             markerId: MarkerId(result.name),
-            // Use an icon with different colors to differentiate between current location
-            // and the restaurants
             icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueAzure),
             onTap: () {
@@ -111,7 +109,13 @@ class _FoodieMapState extends State<FoodieMap> {
                             ),
                             Container(
                                 child: TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                          builder: (context) => PlaceDetailsScreen(result),
+                                      ));
+                                    },
                                     child: Text(
                                       "More Details ->",
                                       style: TextStyle(
@@ -140,10 +144,6 @@ class _FoodieMapState extends State<FoodieMap> {
                     result.geometry!.location.lng),
               );
             },
-            // infoWindow: InfoWindow(
-            //     title: result.name,
-            //     snippet:
-            //         "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
             position: LatLng(
                 result.geometry!.location.lat, result.geometry!.location.lng)))
         .toSet();
@@ -159,7 +159,6 @@ class _FoodieMapState extends State<FoodieMap> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              // The user location returned from the snapshot
               Position? snapshotData = snapshot.data;
               LatLng _userLocation =
                   LatLng(snapshotData!.latitude, snapshotData.longitude);
